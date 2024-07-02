@@ -1,7 +1,5 @@
 import '@/pages/product/product.css';
 
-function renderProductItem() {
-  d;
-}
+function renderProductItem() {}
 
 renderProductItem();
