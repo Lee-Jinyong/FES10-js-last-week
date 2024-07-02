@@ -1,10 +1,21 @@
-import '@/pages/product/product.css';
-import { tiger, insertLast, comma, setDocumentTitle } from 'kind-tiger';
 import getPbImageURL from '@/api/getPbImageURL';
-import gsap from 'gsap';
 import pb from '@/api/pocketbase';
+import '@/pages/product/product.css';
+import gsap from 'gsap';
+import {
+  comma,
+  getStorage,
+  insertLast,
+  setDocumentTitle,
+  setStorage,
+} from 'kind-tiger';
+import defaultAuthData from '../../api/defaultAuthData';
 
 setDocumentTitle('29CM / 상품목록');
+
+if (!localStorage.getItem('auth')) {
+  setStorage('auth', defaultAuthData);
+}
 
 async function renderProductItem() {
   const productData = await pb.collection('products').getFullList({
@@ -14,8 +25,11 @@ async function renderProductItem() {
   // const response = await tiger.get(
   //   `${import.meta.env.VITE_PB_API}/collections/products/records`
   // );
-
   // const productsData = response.data.items;
+
+  const { isAuth } = await getStorage('auth');
+
+  console.log(isAuth);
 
   productData.forEach((item) => {
     const discount = item.price * (item.ratio * 0.01);
@@ -24,6 +38,7 @@ async function renderProductItem() {
       <li class="product-item">
         <div>
           <figure>
+            <a href="${isAuth ? `/src/pages/detail/index.html?product=${item.id}` : '/src/pages/login/'}"></a>
             <img src="${getPbImageURL(item)}" alt="" />
           </figure>
           <span class="brand">${item.brand}</span>
